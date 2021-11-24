@@ -36,6 +36,7 @@ public class ParkingDataBaseIT {
     }
 
     @BeforeEach
+    // Avant chaque test on retourne une voiture et une plaque
     private void setUpPerTest() throws Exception {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -49,9 +50,17 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingACar(){
+    	
+    	// GIVEN
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+      
+        // WHEN
         parkingService.processIncomingVehicle();
+        
+  
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+   
+    
     }
 
     @Test

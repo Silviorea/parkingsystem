@@ -16,7 +16,7 @@ public class ParkingSpot {
     public int getId() {
         return number;
     }
-
+    
     public void setId(int number) {
         this.number = number;
     }
