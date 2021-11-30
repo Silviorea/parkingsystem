@@ -9,6 +9,10 @@ public class FareCalculatorService
 	
 	TicketDAO td = new TicketDAO();
 
+	public FareCalculatorService(TicketDAO td) {
+        this.td = td;
+    }
+	
 	public void calculateFare(Ticket ticket)
 	{
 

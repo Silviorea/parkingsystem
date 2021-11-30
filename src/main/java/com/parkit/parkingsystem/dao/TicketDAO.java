@@ -75,7 +75,7 @@ public class TicketDAO
 			return false;
 		}
 	}
-
+	
 	public Ticket getTicket(String vehicleRegNumber)
 	{
 		Connection con = null;
@@ -90,7 +90,8 @@ public class TicketDAO
 			if (rs.next())
 			{
 				ticket = new Ticket();
-				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), false);
+				// ajout de rs.getBoolean(7) suite à la modif de la requete GET_TICKET
+				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), rs.getBoolean(7));
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setId(rs.getInt(2));
 				ticket.setVehicleRegNumber(vehicleRegNumber);

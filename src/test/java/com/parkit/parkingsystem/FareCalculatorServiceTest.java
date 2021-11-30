@@ -36,12 +36,14 @@ public class FareCalculatorServiceTest {
 
     @BeforeAll
     private static void setUp() {
-        fareCalculatorService = new FareCalculatorService();
+        
     }
 
     @BeforeEach
     private void setUpPerTest() {
         ticket = new Ticket();
+        fareCalculatorService = new FareCalculatorService(td);
+
     }
     
    
@@ -171,7 +173,7 @@ public class FareCalculatorServiceTest {
         assertEquals( 0 , ticket.getPrice() ); 
     }
     
-    @Disabled
+   
     @Test
     public void calculateFareCarForRecurrentUser()
     {
@@ -189,7 +191,7 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         
         verify(td).countTicket("123abc");
-        assertEquals( 1.425, ticket.getPrice());
+        assertEquals( 0.95 * Fare.CAR_RATE_PER_HOUR, ticket.getPrice());
         
     }
     
