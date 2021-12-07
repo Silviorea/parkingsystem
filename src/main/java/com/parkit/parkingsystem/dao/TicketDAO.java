@@ -14,6 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+
+/**
+ * Methods for SQL requests to Ticket database
+ * @author Silvio
+ *
+ */
+
 public class TicketDAO
 {
 
@@ -21,8 +28,14 @@ public class TicketDAO
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-	// METHODE COUNT_TICKET
 
+	/**
+	 * Add countTicket Method to check if a same reg number is already exist in database
+	 * with the SQL request COUNT_TICKET
+	 * @param vehicleRegNumber
+	 * @return the count of the vehiculeRegNumber in database
+	 */
+	
 	public int countTicket(String vehicleRegNumber)
 	{
 		Connection con = null;
@@ -38,8 +51,8 @@ public class TicketDAO
 			{
 				count = rs.getInt(1);
 			}
-
-			return count;
+			dataBaseConfig.closeResultSet(rs);
+			dataBaseConfig.closePreparedStatement(ps);
 		}
 
 		catch (SQLException | ClassNotFoundException e)
@@ -47,17 +60,26 @@ public class TicketDAO
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return 0;
-
+		finally
+		{
+			dataBaseConfig.closeConnection(con);
+			
+		}
+		return count;
 	}
-
+	
+	/**
+     * Save ticket object to Ticket table.
+     * @param ticket object to save
+     * @return true if operation succeeded
+     */
 	public boolean saveTicket(Ticket ticket)
 	{
 		Connection con = null;
-		try
-		{
-			con = dataBaseConfig.getConnection(); // connection BDD
-			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET); // preparation de la requete
+		
+		try{
+			con = dataBaseConfig.getConnection();
+			PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
 			// ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
 			// ps.setInt(1,ticket.getId());
 			ps.setInt(1, ticket.getParkingSpot().getId());
@@ -65,17 +87,30 @@ public class TicketDAO
 			ps.setDouble(3, ticket.getPrice());
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
 			ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
+			
 			return ps.execute();
-		} catch (Exception ex)
+			
+		} 
+		
+		catch (Exception ex)
 		{
 			logger.error("Error fetching next available slot", ex);
-		} finally
+		} 
+		
+		
+		finally
 		{
 			dataBaseConfig.closeConnection(con);
-			return false;
 		}
+		return false;
+		
 	}
 	
+	/**
+     * Get ticket object from Ticket table.
+     * @param vehicleRegNumber used to retrieve ticket
+     * @return ticket object
+     */
 	public Ticket getTicket(String vehicleRegNumber)
 	{
 		Connection con = null;
@@ -90,7 +125,6 @@ public class TicketDAO
 			if (rs.next())
 			{
 				ticket = new Ticket();
-				// ajout de rs.getBoolean(7) suite à la modif de la requete GET_TICKET
 				ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(6)), rs.getBoolean(7));
 				ticket.setParkingSpot(parkingSpot);
 				ticket.setId(rs.getInt(2));
@@ -107,10 +141,15 @@ public class TicketDAO
 		} finally
 		{
 			dataBaseConfig.closeConnection(con);
-			return ticket;
+			
 		}
+		return ticket;
 	}
-
+	/**
+     * Modify ticket in Ticket table.
+     * @param ticket object to modify
+     * @return true if operation succeeded
+     */
 	public boolean updateTicket(Ticket ticket)
 	{
 		Connection con = null;
@@ -122,6 +161,8 @@ public class TicketDAO
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
 			ps.setInt(3, ticket.getId());
 			ps.execute();
+			
+			dataBaseConfig.closePreparedStatement(ps);
 			return true;
 		} catch (Exception ex)
 		{

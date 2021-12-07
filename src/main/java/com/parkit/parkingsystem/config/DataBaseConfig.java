@@ -2,17 +2,24 @@ package com.parkit.parkingsystem.config;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.sql.*;
+
+
+/**
+ * CLASS allows you to connect to database
+ * @author Silvio
+ *
+ */
+
 
 public class DataBaseConfig {
 
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
 
-    /*
-     *  ?serverTimezone=UTC ajouté pour regler le problème des fuseaux horaire"
-     */
+   /*
+    * add "?serverTimezone=UTC" after name of database to fix connexion issue
+    */
     
     public Connection getConnection() throws ClassNotFoundException, SQLException {
         logger.info("Create DB connection");

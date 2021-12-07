@@ -2,14 +2,25 @@ package com.parkit.parkingsystem.util;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.util.Scanner;
 
+/**
+ * Class use for exception handling when user does a choice.
+ * @author Silvio
+ *
+ */
+
 public class InputReaderUtil {
-
-    private static Scanner scan = new Scanner(System.in);
-    private static final Logger logger = LogManager.getLogger("InputReaderUtil");
-
+	
+	private final Logger logger = LogManager.getLogger("InputReaderUtil");
+    private Scanner scan = new Scanner(System.in);
+    
+    
+    /**
+     * Get integer from scan member attribute nextLine().
+     * @return user shell entry as Integer
+     */
+    
     public int readSelection() {
         try {
             int input = Integer.parseInt(scan.nextLine());
@@ -20,7 +31,12 @@ public class InputReaderUtil {
             return -1;
         }
     }
-
+    
+    /**
+     * Get vehicleRegistrationNumber from scan member attribute nextLine().
+     * @return validated user registration number
+     * @throws Exception IllegalArgumentException for wrong registration number format
+     */
     public String readVehicleRegistrationNumber() throws Exception {
         try {
             String vehicleRegNumber= scan.nextLine();

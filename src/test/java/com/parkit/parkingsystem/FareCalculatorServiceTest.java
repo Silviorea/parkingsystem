@@ -25,7 +25,7 @@ public class FareCalculatorServiceTest {
 	
 	@Mock
 	TicketDAO td;
-	
+
 	
     private static FareCalculatorService fareCalculatorService;
     private Ticket ticket;
@@ -143,7 +143,7 @@ public class FareCalculatorServiceTest {
     }
     
     
-// FONCTIONNALITE 30 MINUTES GRATUITES  VOITURE  //
+
     @Test
     public void calculateFareCarWith30MinutesFree(){
         Date inTime = new Date();
@@ -157,11 +157,36 @@ public class FareCalculatorServiceTest {
         assertEquals( 0, ticket.getPrice());
     }
     
- // FONCTIONNALITE 30 MINUTES GRATUITES  MOTO  //  
+    @Test
+    public void calculateFareCarWith10MinutesFree(){
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - ( 10 * 60 * 1000) );
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( 0, ticket.getPrice());
+    }
+    
     @Test
     public void calculateFareBikeWith30MinutesFree(){
         Date inTime = new Date();
         inTime.setTime( System.currentTimeMillis() - (  30 * 60 * 1000) );
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        assertEquals( 0 , ticket.getPrice() ); 
+    }
+    
+    @Test
+    public void calculateFareBikeWith10MinutesFree(){
+        Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - (  10 * 60 * 1000) );
         Date outTime = new Date();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
         ticket.setInTime(inTime);
@@ -190,6 +215,27 @@ public class FareCalculatorServiceTest {
         
         verify(td).countTicket("123abc");
         assertEquals( 0.95 * Fare.CAR_RATE_PER_HOUR, ticket.getPrice());
+        
+    }
+    
+    @Test
+    public void calculateFareBikeForRecurrentUser()
+    {
+    	ticket.setVehicleRegNumber("123abc");
+    	
+    	when(td.countTicket("123abc")).thenReturn(2);
+    	
+    	Date inTime = new Date();
+        inTime.setTime( System.currentTimeMillis() - ( 60 * 60 * 1000) );
+        Date outTime = new Date();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        fareCalculatorService.calculateFare(ticket);
+        
+        verify(td).countTicket("123abc");
+        assertEquals( 0.95 * Fare.BIKE_RATE_PER_HOUR, ticket.getPrice());
         
     }
     

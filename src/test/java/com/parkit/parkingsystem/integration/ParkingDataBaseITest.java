@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class ParkingDataBaseIT {
+public class ParkingDataBaseITest {
 
     private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
@@ -30,7 +30,7 @@ public class ParkingDataBaseIT {
     private static DataBasePrepareService dataBasePrepareService;
 
 
-    
+   
 
     @Mock
     private static InputReaderUtil inputReaderUtil;
@@ -62,20 +62,13 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingACar(){
     	
-    	// GIVEN
-    
+    	
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        
-
-        // WHEN
+     
         parkingService.processIncomingVehicle();
-        
-        
-        // THEN
+   
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
-        // test si methode get.ticket ne retourne pas résultat null => bien inscrit en BDD
         assertNotNull(ticket);
-        // test si getParkingSpot retourne bien false => la place donnée n'est plus disponible lors de l'entrée au parking
         assertEquals(ticket.getParkingSpot().isAvailable(), false);
   
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
@@ -85,25 +78,16 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExit() throws InterruptedException{
-        
-    	// GIVEN
-    	
+      
     	testParkingACar();
     	Thread.sleep(2000);
     	ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-    	
-        
-        // WHEN
-    	
+    
         parkingService.processExitingVehicle();
         
-        // THEN
         Ticket ticket = ticketDAO.getTicket("ABCDEF");
-        //test gestOutTIme n'est pas null
         assertNotNull(ticket.getOutTime());
-        //test getPrice n'est pas null
         assertNotNull(ticket.getPrice());
-        // test si getParkingSpot retourne bien True une fois le véhicule sortie => place à nouveau libre
         assertEquals(ticket.getParkingSpot().isAvailable(), true);
         
         
