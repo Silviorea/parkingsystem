@@ -54,7 +54,6 @@ public class TicketDAO
 			dataBaseConfig.closeResultSet(rs);
 			dataBaseConfig.closePreparedStatement(ps);
 		}
-
 		catch (SQLException | ClassNotFoundException e)
 		{
 			// TODO Auto-generated catch block
@@ -63,7 +62,6 @@ public class TicketDAO
 		finally
 		{
 			dataBaseConfig.closeConnection(con);
-			
 		}
 		return count;
 	}
